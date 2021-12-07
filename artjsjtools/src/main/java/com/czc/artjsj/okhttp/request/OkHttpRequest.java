@@ -8,9 +8,6 @@ import okhttp3.RequestBody;
 
 import java.util.Map;
 
-/**
- * Created by zhy on 15/11/6.
- */
 public abstract class OkHttpRequest {
 
     protected String url;

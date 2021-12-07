@@ -24,9 +24,10 @@ public class KBeanSerializer extends BeanSerializerModifier {
     @Override
     public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription beanDesc,
                                                      List<BeanPropertyWriter> beanProperties) {
-        // 循环所有的beanPropertyWriter
+        /*
+        循环所有的beanPropertyWriter
+         */
         beanProperties.forEach(writer -> {
-            // 判断字段的类型
             KSerializerType kSerializerType;
             if (isStringType(writer))
                 kSerializerType = KSerializerType.STR;
@@ -56,37 +57,51 @@ public class KBeanSerializer extends BeanSerializerModifier {
         return beanProperties;
     }
 
-    //用不到，基础数据类型有默认值，判断是否是为：boolean, byte, char, short, int, long, float, double 等原始类型。
+    /**
+     * 暂时用不到，基础数据类型有默认值，判断是否是为：boolean, byte, char, short, int, long, float, double 等原始类型。
+     */
     private boolean isPrimitiveType(BeanPropertyWriter writer) {
         return writer.getType().getRawClass().isPrimitive();
     }
 
-    // 判断是否是string类型
+    /**
+     * 判断是否是string类型
+     */
     private boolean isStringType(BeanPropertyWriter writer) {
         return CharSequence.class.isAssignableFrom(writer.getType().getRawClass());
     }
 
-    // 判断是否是为：Short, Int, Long, Float, Double, Byte等数值类型。
+    /**
+     * 判断是否是为：Short, Int, Long, Float, Double, Byte等数值类型。
+     */
     private boolean isNumType(BeanPropertyWriter writer) {
         return Number.class.isAssignableFrom(writer.getType().getRawClass());
     }
 
-    // 判断是否是为：Boolean类型。
+    /**
+     * 判断是否是为：Boolean类型。
+     */
     private boolean isBooleanType(BeanPropertyWriter writer) {
         return writer.getType().getRawClass().equals(Boolean.class);
     }
 
-    // 判断是否是为：Character等数值类型。
+    /**
+     * 判断是否是为：Character等数值类型。
+     */
     private boolean isCharacter(BeanPropertyWriter writer) {
         return writer.getType().getRawClass().equals(Character.class);
     }
 
-    // 判断是否是集合类型
+    /**
+     * 判断是否是集合类型
+     */
     protected boolean isArrayType(BeanPropertyWriter writer) {
         return Collection.class.isAssignableFrom(writer.getType().getRawClass());
     }
 
-    // 判断是否是为：Map 类型。
+    /**
+     * 判断是否是为：Map 类型。
+     */
     private boolean isMapType(BeanPropertyWriter writer) {
         return Map.class.isAssignableFrom(writer.getType().getRawClass());
     }

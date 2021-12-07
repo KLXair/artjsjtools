@@ -46,35 +46,42 @@ public class CrawlingUtil {
      * @param headers     定义过滤器，提取以 url 开头的链接
      * @param cssSelector 抓取选择器
      * @return Elements
-     * @author KLXair<BR />
-     * 2019/10/12 上午12:15:30
+     * @author KLXair
      */
     public Elements crawling(String seeds, Map<String, String> headers, String cssSelector) {
-        Elements elements = null;
+        Elements elements;
         if (TextUtils.isEmpty(seeds)) {
-            L.e("待抓取的链接不能为空");
+            L.e("seeds is null");
             return null;
         }
         if (!CheckUtil.isUrl(seeds)) {
-            L.e("待抓取的链接不合法");
+            L.e("seeds illegal");
             return null;
         }
 
-        // 合法url开始抓取页面
-        Response response = null;
+        /*
+          合法url开始抓取页面
+         */
+        Response response;
+
         Page page = null;
         try {
             response = OkHttpUtils.get().url(seeds).headers(headers).build().readTimeOut(60000).writeTimeOut(60000)
                     .connTimeOut(60000).execute();
-            byte[] responseBody = response.body().bytes();// 读取为字节 数组
-            String contentType = response.header("Content-Type"); // 得到当前返回类型
-            page = new Page(responseBody, seeds, contentType); // 封装成为页面
+            byte[] responseBody = response.body().bytes();
+            String contentType = response.header("Content-Type");
+            /*
+              封装成为页面
+             */
+            page = new Page(responseBody, seeds, contentType);
         } catch (IOException e) {
-            L.e("抓取页面的请求失败，失败原因：" + e.getMessage());
+            L.e("crawling exception=" + e.getMessage());
             e.printStackTrace();
         }
 
-        // 对page进行处理： 访问DOM的某个标签
+        /*
+        对page进行处理： 访问DOM的某个标签
+         */
         elements = PageParserTool.select(page, cssSelector);
 
         return elements;
@@ -86,44 +93,45 @@ public class CrawlingUtil {
      * @param seeds       要抓取的URL队列
      * @param headers     定义过滤器，提取以 url 开头的链接
      * @param cssSelector 抓取选择器
-     * @return List<Elements>
-     * @author KLXair<BR />
-     * 2019/10/12 上午12:15:30
      */
     public List<Elements> crawling(List<String> seeds, Map<String, String> headers, String cssSelector) {
         List<Elements> listElements = new ArrayList<>();
         Elements elements;
         if (seeds == null) {
-            L.e("待抓取的链接不能为空");
+            L.e("seeds is null");
             return listElements;
         }
         if (seeds.size() <= 0) {
-            L.e("无需要抓取的地址");
+            L.e("seeds size is null");
             return listElements;
         }
 
         for (int i = 0; i < seeds.size(); i++) {
-            // 先从待访问的序列中取出第一个
-            if (CheckUtil.isUrl(seeds.get(i))) {// 合法url开始抓取页面
-                Response response = null;
+            /*
+            先从待访问的序列中取出第一个
+             */
+            if (CheckUtil.isUrl(seeds.get(i))) {
+                Response response;
                 Page page = null;
                 try {
                     response = OkHttpUtils.get().url(seeds.get(i)).headers(headers).build().readTimeOut(60000)
                             .writeTimeOut(60000).connTimeOut(60000).execute();
-                    byte[] responseBody = response.body().bytes();// 读取为字节 数组
-                    String contentType = response.header("Content-Type"); // 得到当前返回类型
-                    page = new Page(responseBody, seeds.get(i), contentType); // 封装成为页面
+                    byte[] responseBody = response.body().bytes();
+                    String contentType = response.header("Content-Type");
+                    page = new Page(responseBody, seeds.get(i), contentType);
                 } catch (IOException e) {
-                    L.e("抓取页面的请求失败，失败原因：" + e.getMessage());
+                    L.e("crawling exception=" + e.getMessage());
                     e.printStackTrace();
                 }
 
-                // 对page进行处理： 访问DOM的某个标签
+                /*
+                对page进行处理： 访问DOM的某个标签
+                 */
                 elements = PageParserTool.select(page, cssSelector);
 
                 listElements.add(elements);
             } else {
-                L.e("第" + i + "个抓取地址不合法，url：" + seeds.get(i));
+                L.e("num=" + i + "illegal,url=" + seeds.get(i));
             }
         }
         return listElements;

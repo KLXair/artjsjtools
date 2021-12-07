@@ -32,12 +32,17 @@ public class OkHttpUtils {
 
     private OkHttpUtils() {
         okHttpClientBuilder = new OkHttpClient.Builder();
+
+        /*
         // cookie enabled，不需要使用cookieJar，通过header或者提交参数里就好
         // okHttpClientBuilder.cookieJar(new SimpleCookieJar());
+         */
         okHttpClientBuilder.hostnameVerifier(new HostnameVerifier() {
             @Override
             public boolean verify(String hostname, SSLSession session) {
-                // 这里先不做校验
+                /*
+                这里先不做校验
+                 */
                 return true;
             }
         });
@@ -100,7 +105,7 @@ public class OkHttpUtils {
     }
 
     public void execute(final RequestCall requestCall, Callback<?> callback) {
-        L.e("{method:" + requestCall.getRequest().method() + ", detail:"
+        L.e("{method=" + requestCall.getRequest().method() + ", detail="
                 + requestCall.getOkHttpRequest().toString() + "}");
 
         if (callback == null)
@@ -110,7 +115,7 @@ public class OkHttpUtils {
         requestCall.getCall().enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                L.e("IOException异常getMessage:" + e.getMessage());
+                L.e(e);
                 sendFailResultCallback(call, e, finalCallback);
             }
 
@@ -128,7 +133,7 @@ public class OkHttpUtils {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        L.e("生成錯誤信息返回出錯，code=" + code + "；responseBody=" + responseBody, e);
+                        L.e("code=" + code + "；responseBody=" + responseBody, e);
                     }
                     return;
                 }
@@ -138,7 +143,7 @@ public class OkHttpUtils {
                     sendSuccessResultCallback(obj, finalCallback);
                 } catch (Exception e) {
                     sendFailResultCallback(call, e, finalCallback);
-                    L.e("返回成功信息出錯：" + e.getMessage());
+                    L.e(e);
                 }
             }
         });
@@ -173,7 +178,9 @@ public class OkHttpUtils {
 
     private static SSLSocketFactory sslSocketFactory() {
         try {
+            /*
             //信任任何链接
+             */
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, new TrustManager[]{x509TrustManager()}, new SecureRandom());
             return sslContext.getSocketFactory();
@@ -206,9 +213,12 @@ public class OkHttpUtils {
                     .sslSocketFactory(Objects.requireNonNull(sslSocketFactory()), x509TrustManager()).build();
     }
 
+    /*
+      连接池
+     */
     public static void connectionPool(int maxIdleConnections, long keepAliveDuration, TimeUnit timeUnit) {
         getInstance().mOkHttpClient = getInstance().okHttpClientBuilder
-                .connectionPool(new ConnectionPool(maxIdleConnections, keepAliveDuration, timeUnit)).build();//连接池
+                .connectionPool(new ConnectionPool(maxIdleConnections, keepAliveDuration, timeUnit)).build();
     }
 
     public static void setCertificates(InputStream... certificates) {
@@ -256,16 +266,20 @@ public class OkHttpUtils {
      */
     public static void setRetryOnConnFailAndTimeout(boolean retryOnConnFail, long connectTimeout,
                                                     long readTimeout, long writeTimeout, long callTimeout, TimeUnit units) {
+        /*
         // 这里额外说明下，超时还可以设置pingInterval，通过跟源码我们可以看到,这个值只有http2和webSocket中有使用，如果设置了这个值会定时的向服务器发送一个消息来保持长连接。
         // 所以在写websocket时是完全可以只用设置这个值来保持长连接的.客户端在发送ping消息时服务端会相应的返回pong消息来进行回应.
         // 同时okhttp也实现了pong,服务端在发起ping的时候客户端会通过pong来进行回应,即:在进行长连接时,客户端不需要进行只需要服务端进行定时ping也是可以保持长连接的.
         // 接下来就开始讲和我们密切相关的readTimeout和writeTimeout了,当然也是最复杂的.其中最重要的还是readTimeout,我们先看writeTimeout
+         */
         getInstance().mOkHttpClient = getInstance().okHttpClientBuilder.retryOnConnectionFailure(retryOnConnFail)
                 .connectTimeout(connectTimeout, units).readTimeout(readTimeout, units).writeTimeout(writeTimeout, units).callTimeout(callTimeout, units)
                 .build();
     }
 
+    /*
     // 设置okhttp全局请求代理（注意，如果请求自己另外设置了connectTimeout|readTimeOut|writeTimeOut等build的操作，则不会使用全局代理请求，因为自己设置了一个全新的build）
+     */
     public static void setProxy(String hostName, int port, final String userName, final String password) {
         if (TextUtils.isEmpty(hostName)) {
             getInstance().mOkHttpClient = getInstance().okHttpClientBuilder.proxy(null).build();
@@ -274,7 +288,10 @@ public class OkHttpUtils {
             getInstance().mOkHttpClient = getInstance().okHttpClientBuilder.proxyAuthenticator(new okhttp3.Authenticator() {
                 @Override
                 public Request authenticate(@Nullable Route route, @NotNull Response response) {
+
+                    /*
                     //设置代理服务器账号密码
+                     */
                     String credential = Credentials.basic(userName, password);
                     return response.request().newBuilder()
                             .header("Proxy-Authorization", credential)

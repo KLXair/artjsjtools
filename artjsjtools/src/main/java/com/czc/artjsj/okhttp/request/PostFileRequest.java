@@ -8,13 +8,10 @@ import okhttp3.RequestBody;
 import java.io.File;
 import java.util.Map;
 
-/**
- * Created by zhy on 15/12/14.
- */
 public class PostFileRequest extends OkHttpRequest {
-    private static MediaType MEDIA_TYPE_STREAM = MediaType.parse("application/octet-stream");
+    private static final MediaType MEDIA_TYPE_STREAM = MediaType.parse("application/octet-stream");
 
-    private File file;
+    private final File file;
     private MediaType mediaType;
 
 

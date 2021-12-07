@@ -20,11 +20,15 @@ public class KJsonSerializer extends JsonSerializer<Object> {
     @Override
     public void serialize(Object value, JsonGenerator jgen, SerializerProvider serializers) throws IOException {
         if (value == null) {
-//            String fieldName = jgen.getOutputContext().getCurrentName();
-//            L.e(fieldName + "-类型:" + kSerializerType);
+            /*
+            // String fieldName = jgen.getOutputContext().getCurrentName();
+            // L.e(fieldName + "-type=" + kSerializerType);
+             */
             if (kSerializerType == KBeanSerializer.KSerializerType.MAP
                     || kSerializerType == KBeanSerializer.KSerializerType.OTHER) {
-                //obj/map/bean/其他类型对象都返回{}
+                /*
+                obj/map/bean/其他类型对象都返回{}
+                 */
                 jgen.writeStartObject();
                 jgen.writeEndObject();
             } else if (kSerializerType == KBeanSerializer.KSerializerType.STR) {
@@ -36,7 +40,9 @@ public class KJsonSerializer extends JsonSerializer<Object> {
             } else if (kSerializerType == KBeanSerializer.KSerializerType.CHAR) {
                 jgen.writeObject('\u0000');
             } else if (kSerializerType == KBeanSerializer.KSerializerType.ARR) {
-                //列表型null值返回[]
+                /*
+                列表型null值返回[]
+                 */
                 jgen.writeStartArray();
                 jgen.writeEndArray();
             } else {

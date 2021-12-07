@@ -89,7 +89,7 @@ public class CrawlBuilderImpl extends CrawlBuilder {
         } else {
             this.select += (" " + select);
         }
-        L.e("拼接完成后的select：" + this.select);
+        L.e("select=" + this.select);
         return this;
     }
 

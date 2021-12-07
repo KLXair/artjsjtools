@@ -25,12 +25,16 @@ public class IPUtils {
     public static String getIpAddr(HttpServletRequest request) {
         String ip = "";
         try {
+            /*
             //以下两个获取在k8s中，将真实的客户端IP，放到了x-Original-Forwarded-For。而将WAF的回源地址放到了 x-Forwarded-For了。
+             */
             ip = request.getHeader("X-Original-Forwarded-For");
             if (TextUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("X-Forwarded-For");
             }
+            /*
             //获取nginx等代理的ip
+             */
             if (TextUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("x-forwarded-for");
             }
@@ -46,11 +50,15 @@ public class IPUtils {
             if (TextUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("HTTP_X_FORWARDED_FOR");
             }
+            /*
             //兼容k8s集群获取ip
+             */
             if (TextUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
                 ip = request.getRemoteAddr();
                 if (LOCALHOST_IP1.equalsIgnoreCase(ip) || LOCALHOST_IP.equalsIgnoreCase(ip)) {
+                    /*
                     //根据网卡取本机配置的IP
+                     */
                     InetAddress iNet = null;
                     try {
                         iNet = InetAddress.getLocalHost();
@@ -61,9 +69,11 @@ public class IPUtils {
                 }
             }
         } catch (Exception e) {
-            L.e("IPUtils 错误", e);
+            L.e(e);
         }
+        /*
         //使用代理，则获取第一个IP地址
+         */
         if (!TextUtils.isEmpty(ip) && ip.indexOf(IP_UTILS_FLAG) > 0) {
             ip = ip.substring(0, ip.indexOf(IP_UTILS_FLAG));
         }

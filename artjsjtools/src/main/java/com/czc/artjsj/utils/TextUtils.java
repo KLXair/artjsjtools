@@ -29,7 +29,7 @@ public class TextUtils {
      * @return String 取出后的结果
      */
     public static String getChinese(String content) {
-        String regex = "([\u4e00-\u9fa5]+)";// 中文正则
+        String regex = "([\u4e00-\u9fa5]+)";
         String str = "";
         Matcher matcher = Pattern.compile(regex).matcher(content);
         while (matcher.find()) {
@@ -45,8 +45,7 @@ public class TextUtils {
      * @return String 删除后的结果
      */
     public static String delChinese(String content) {
-        String REGEX_CHINESE = "[\u4e00-\u9fa5]";// 中文正则
-        // 去除中文
+        String REGEX_CHINESE = "[\u4e00-\u9fa5]";
         Pattern pat = Pattern.compile(REGEX_CHINESE);
         Matcher mat = pat.matcher(content);
         return mat.replaceAll("");

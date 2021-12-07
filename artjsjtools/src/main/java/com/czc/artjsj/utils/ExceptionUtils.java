@@ -63,6 +63,7 @@ public class ExceptionUtils {
 
 
     private static String baseRunInfo(int stackTraceNum) throws Exception {
+        /*
         // Thread.currentThread().getStackTrace()[1]是你当前方法执行堆栈
         // Thread.currentThread().getStackTrace()[2]就是上一级的方法堆栈 以此类推
         // StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
@@ -70,7 +71,8 @@ public class ExceptionUtils {
         //     System.out.println(stackTraceElement.getMethodName() + "-" + stackTraceElement.getMethodName() + "-"
         //             + stackTraceElement.getLineNumber());
         // }
-        String className = Thread.currentThread().getStackTrace()[stackTraceNum].getClassName();// 类名
+         */
+        String className = Thread.currentThread().getStackTrace()[stackTraceNum].getClassName();
         return className.substring(className.lastIndexOf(".") + 1) + "-"
                 + Thread.currentThread().getStackTrace()[stackTraceNum].getMethodName() + "-"
                 + Thread.currentThread().getStackTrace()[stackTraceNum].getLineNumber();

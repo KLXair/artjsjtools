@@ -4,9 +4,6 @@ import com.czc.artjsj.okhttp.request.RequestCall;
 
 import java.util.Map;
 
-/**
- * Created by zhy on 15/12/14.
- */
 public abstract class OkHttpRequestBuilder {
 	protected String url;
 	protected Object tag;
